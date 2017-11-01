@@ -1,0 +1,26 @@
+{
+    "contributors": [
+        "DavisDevelopment"
+    ],
+    "description": "haxe-based framework/library for building software for mobile and desktop, using electron (desktop) and cordova (mobile) respectively",
+    "dependencies": {
+        "slambda": "0.8.5"
+    },
+    "license": "MIT",
+    "releasenote": "", 
+    "name": "edis",
+    "version": "0.0.1",
+    "url": "http://github.com/DavisDevelopment/edis",
+    "tags": [
+        "tannus",
+        "tnative", 
+        "storage", "localforage", "localstorage",
+        "nedb", "indexedb", "websql", "nosql",
+        "cordova", "mobile", "ios", "android",
+        "html5",
+        "js", "javascript",
+        "electron", "desktop", "windows", "linux",
+        "chrome", "chromeos", "chromebook", "chromeapp", 
+        "concurrent", "concurrency", "worker", "webworker"
+    ]
+}
