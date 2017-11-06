@@ -6,7 +6,7 @@ import tannus.async.*;
 
 import haxe.extern.EitherType;
 
-import sa.Globals.*;
+import edis.Globals.*;
 
 import js.html.Storage;
 import Reflect.*;
@@ -82,7 +82,7 @@ class WebStorageArea extends StorageArea {
         vasync(()->s.removeItem(key), cb);
     }
 
-    override function removerProperties(keys:Iterable<String>, cb:VoidCb):Void {
+    override function removeProperties(keys:Iterable<String>, cb:VoidCb):Void {
         vasync(()->{
             for (key in keys)
                 s.removeItem( key );

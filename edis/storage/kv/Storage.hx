@@ -1,4 +1,4 @@
-package sa.storage;
+package edis.storage.kv;
 
 import tannus.ds.*;
 import tannus.io.*;
@@ -7,7 +7,7 @@ import tannus.async.promises.*;
 
 import haxe.extern.EitherType as Either;
 
-import sa.Globals.*;
+//import sa.Globals.*;
 
 using Slambda;
 using tannus.ds.ArrayTools;
@@ -33,7 +33,7 @@ class Storage {
     public function getValuesObject(o:Object, ?done:Cb<Dynamic>):Promise<Dynamic> return pp(area.getValuesObject.bind(o, _), done);
     public function getValues(keys:Array<String>, ?done:Cb<Dynamic>):Promise<Dynamic> return pp(area.getValues.bind(keys, _), done);
     public function getAll(?done : Cb<Dynamic>):Promise<Dynamic> return pp(area.getAll, done);
-    public function setValue(key:String, value:Dynamic, ?done:VoidCb):Promise<Storage> return ppv(area.setValue.bind(ket, value, _), done);
+    public function setValue(key:String, value:Dynamic, ?done:VoidCb):Promise<Storage> return ppv(area.setValue.bind(key, value, _), done);
     public function setValues(values:Dynamic, ?done:VoidCb):Promise<Storage> return ppv(area.setValues.bind(values, _), done);
     public function setValuesMap(values:Map<String, Dynamic>, ?done:VoidCb):Promise<Storage> return ppv(area.setValuesMap.bind(values, _), done);
     public function removeProperty(key:String, ?done:VoidCb):Promise<Storage> return ppv(area.removeProperty.bind(key, _), done);

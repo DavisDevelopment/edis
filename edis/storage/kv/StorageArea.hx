@@ -7,7 +7,7 @@ import tannus.html.JSFunction;
 
 import haxe.extern.EitherType;
 
-import sa.Globals.*;
+import edis.Globals.*;
 
 import Slambda.fn;
 
@@ -264,7 +264,7 @@ class StorageArea {
     /**
       * delete a list of properties
       */
-    public function removerProperties(keys:Iterable<String>, done:VoidCb):Void {
+    public function removeProperties(keys:Iterable<String>, done:VoidCb):Void {
         VoidAsyncs.callEach([for (key in keys) {
             removeProperty.bind(key, _);
         }], done);
@@ -413,7 +413,7 @@ class StorageArea {
     public function remove(props:EitherType<String, Iterable<String>>, done:VoidCb):Void {
         if ((props is String))
             props = [cast props];
-        return removerProperties(cast props, done);
+        return removeProperties(cast props, done);
     }
 
     private function encode(value : Dynamic):Dynamic return value;

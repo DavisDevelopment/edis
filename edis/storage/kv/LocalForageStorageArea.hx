@@ -10,9 +10,7 @@ import haxe.extern.EitherType;
 import edis.libs.localforage.LocalForage;
 import edis.storage.kv.*;
 import edis.storage.db.*;
-
-import sa.Globals.*;
-import pt.Globals.*;
+import edis.Globals.*;
 
 using Slambda;
 using tannus.ds.ArrayTools;
