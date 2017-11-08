@@ -4,6 +4,7 @@ import tannus.io.*;
 import tannus.ds.*;
 import tannus.html.Win;
 import tannus.html.fs.*;
+import tannus.html.fs.WebFSEntry;
 import tannus.async.*;
 import tannus.sys.Path;
 
@@ -19,7 +20,7 @@ extern class CordovaFile {
     public static var externalRootDirectory:String;
     public static var tempDirectory:String;
 
-    public static inline function resolve(path:String, success:js.html.Directory->Void, failure:Dynamic->Void):Void {
+    public static inline function resolve(path:String, success:WebFSEntry->Void, failure:Dynamic->Void):Void {
         (untyped __js__('(window.resolveLocalFileSystemURL||window.webkitResolveLocalFileSystemURL)({0}, {1}, {2})', path, success, failure));
     }
 }
