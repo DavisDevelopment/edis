@@ -32,15 +32,15 @@ class FileSystemImpl {
         throw 'not implemented';
     }
 
-    public function createDirectory(path:Path, ?done:Cb<Path>):Promise<Path> {
+    public function createDirectory(path:Path, ?done:VoidCb):VoidPromise {
         throw 'not implemented';
     }
 
-    public function deleteDirectory(path:Path, ?done:Cb<Path>):Promise<Path> {
+    public function deleteDirectory(path:Path, ?done:VoidCb):VoidPromise {
         throw 'not implemented';
     }
 
-    public function deleteFile(path:Path, ?done:Cb<Path>):Promise<Path> {
+    public function deleteFile(path:Path, ?done:VoidCb):VoidPromise {
         throw 'not implemented';
     }
 
@@ -60,7 +60,7 @@ class FileSystemImpl {
         throw 'not implemented';
     }
 
-    public function write(path:Path, data:ByteArray, ?done:Cb<Path>):Promise<Path> {
+    public function write(path:Path, data:ByteArray, ?done:VoidCb):VoidPromise {
         throw 'not implemented';
     }
 

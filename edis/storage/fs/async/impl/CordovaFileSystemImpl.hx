@@ -4,6 +4,8 @@ import tannus.io.*;
 import tannus.ds.*;
 import tannus.sys.Path;
 import tannus.async.*;
+import tannus.async.Promise;
+import tannus.async.VoidPromise;
 import tannus.async.promises.*;
 import tannus.html.fs.*;
 
@@ -15,6 +17,10 @@ import haxe.Unserializer;
 
 import edis.Globals.*;
 
+import js.html.Exception;
+import js.html.DOMException;
+import js.html.DOMException.*;
+
 using StringTools;
 using tannus.ds.StringUtils;
 using Slambda;
@@ -25,96 +31,99 @@ class CordovaFileSystemImpl extends FileSystemImpl {
     public function new():Void {
         super();
 
-        dirs = new Dict();
+        roots = new Dict();
+        entries = new Dict();
+        etc = new Dict();
+        paths = new Set();
     }
 
 /* === Instance Methods === */
 
-    /**
-      *
-      */
     override function exists(path:Path, ?done:Cb<Bool>):Promise<Bool> {
-        return derive(path, done, function(dir) {
-            return dir.exists( path );
+        return derive(path, done, function(path, entry) {
+            return (entry != null);
         });
     }
 
-    override function isDirectory(path:Path, ?done:Cb<Bool>):Promise<Bool> {
-        return derive(path, done, function(dir) {
-            return dir.getDirectory( path ).transform(@ignore function(d) {
-                if (d == null) {
-                    return false;
-                }
-                else {
-                    return true;
-                }
+    private function derive<T>(path:Path, ?done:Cb<T>, f:Path->WebFSEntry->PromiseResolution<T>):Promise<T> {
+        return wrap(done, Promise.create({
+            return resolveEntry( path ).transform(@ignore function(entry) {
+                return untyped f(path, entry);
             });
+        }));
+    }
+
+    private function resolveEntry(path:Path, ?done:Cb<WebFSEntry>):Promise<WebFSEntry> {
+        return wrap(done, new Promise(function(yes, no) {
+            CordovaFile.resolve(pathToUrl( path ), yes, no);
+        }));
+    }
+
+    private function urlToPath(url : String):Path {
+        if (url.startsWith('file://')) {
+            url = url.after('file://');
+        }
+        return Path.fromString( url );
+    }
+
+    private function pathToUrl(path : Path):String {
+        return ('file://'+path.toString());
+    }
+
+    /**
+      * wrap a Promise in an error-transforming Promise
+      */
+    private function fwdErrs<T,P:Promise<T>>(promise : P):Promise<T> {
+        return promise.derive(function(promise, accept, reject) {
+            promise.then( accept );
+
+            inline function fe<I,O>(m:I->O, ?c:I->Bool) {
+                promise.unless(function(in_err:I) {
+                    reject(m( in_err ));
+                }, c);
+            }
+
+            fe(domExceptionToFileError, fn((_ is DOMException)));
+            fe(fn(_));
         });
     }
 
     /**
-      * derive one promise from another
+      * create a FileError from a DOMException
       */
-    private function derive<T, P:Promise<T>>(path:Path, ?done:Cb<T>, f:WebDirectoryEntry->P):P {
-        return wrap(Promise.create({
-            resolveRoot(path).then(function(dir) {
-                return @forward f( dir );
-            }, error->throw error);
-        }), done);
+    private function domExceptionToFileError(e : DOMException):FileError {
+        return new FileError(translateDomExceptionType( e ), e.message);
     }
 
     /**
-      * resolve a root Directory from the given Path
+      * determine FileErrorType from the error code of a DOMException
       */
-    private function resolveRoot(path : Path):Promise<WebDirectoryEntry> {
-        return resolveRootFromName(rootName(path.normalize().pieces[0]));
-    }
-
-    /**
-      * get the Path to a root
-      */
-    private function rootName(name : String):String {
-        switch (name) {
-            case 'app', 'application':
-                return CordovaFile.applicationDirectory;
-            case 'appstorage', 'applicationstorage':
-                return CordovaFile.applicationStorageDirectory;
-            case 'data':
-                return CordovaFile.dataDirectory;
-            case 'cache':
-                return CordovaFile.cacheDirectory;
-            case 'temp':
-                return CordovaFile.tempDirectory;
-            case 'external', 'external-storage':
-                return CordovaFile.externalApplicationStorageDirectory;
-            case 'externaldata', 'external-data':
-                return CordovaFile.externalDataDirectory;
-            case 'externalroot', 'external-root':
-                return CordovaFile.externalRootDirectory;
-            case 'externalcache', 'external-cache':
-                return CordovaFile.externalCacheDirectory;
-            case _:
-                throw 'WhatTheFuck';
-        }
-    }
-
-    /**
-      * resolve root Directory from its name
-      */
-    private function resolveRootFromName(name : String):Promise<WebDirectoryEntry> {
-        return new Promise(function(yes, no) {
-            if (dirs.exists(name)) {
-                defer(yes.bind(dirs[name]));
-            }
-            else {
-                CordovaFile.resolve(name, function(dir:js.html.Directory) {
-                    yes(dirs[name] = new WebDirectoryEntry(cast dir));
-                }, no);
-            }
+    private function translateDomExceptionType(e : DOMException):FileErrorType {
+        return (switch ( e.code ) {
+            case DATA_CLONE_ERR: DataCloneError;
+            case NOT_FOUND_ERR: NotFoundError;
+            case NOT_SUPPORTED_ERR: NotSupportedError;
+            case NO_DATA_ALLOWED_ERR: NoDataAllowedError;
+            case NO_MODIFICATION_ALLOWED_ERR: NoModificationAllowedError;
+            case QUOTA_EXCEEDED_ERR: QuotaExceededError;
+            case SECURITY_ERR: SecurityError;
+            case TYPE_MISMATCH_ERR: TypeMismatchError;
+            case URL_MISMATCH_ERR: UrlMismatchError;
+            case VALIDATION_ERR: ValidationError;
+            case WRONG_DOCUMENT_ERR: WrongDocumentError;
+            case _: CustomError( e.name );
         });
     }
 
 /* === Instance Fields === */
 
-    private var dirs : Dict<String, WebDirectoryEntry>;
+    private var roots : Dict<String, WebDirectoryEntry>;
+    private var entries : Dict<Path, WebFSEntry>;
+    private var etc : Dict<Path, EntryType>;
+    private var paths : Set<Path>;
+}
+
+enum PathResolution {
+    Absolute;
+    From(dir : WebDirectoryEntry);
 }
