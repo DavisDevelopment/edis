@@ -11,11 +11,11 @@ import edis.storage.db.Modification;
 import edis.storage.db.Query.*;
 
 import edis.libs.nedb.DataStore;
+import edis.Globals.*;
 
 import Slambda.fn;
 import tannus.math.TMath.*;
 import haxe.extern.EitherType;
-import edis.Globals.*;
 
 using StringTools;
 using tannus.ds.StringUtils;
