@@ -27,6 +27,7 @@ extern class DataStore {
 /* === Instance Fields === */
 
     public var persistence : Persistence;
+    public var indexes : Dynamic<Index>;
 }
 
 typedef IndexOptions = {
