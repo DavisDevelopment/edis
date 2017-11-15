@@ -46,21 +46,8 @@ class Prerequisites {
     public inline function prom<T>(a : Promise<T>):Void add(PPromise( a ));
     public inline function task(a : Task1):Void add(PTask( a ));
 
-    public function meet(?done: VoidCb):VoidPromise {
-        var vp = VoidPromise.create({
-            var steps = items.map( _vasync );
-            VoidAsyncs.series(steps, function(?error) {
-                if (error != null) {
-                    throw error;
-                }
-                else {
-                    return ;
-                }
-            });
-        });
-        if (done != null)
-            vp.then(done.void()).unless(done.raise());
-        return vp;
+    public function meet(done: VoidCb):Void {
+        VoidAsyncs.series(items.map(_vasync), done);
     }
 
     private function _vasync(item : Prereq):VoidAsync {

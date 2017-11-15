@@ -33,14 +33,16 @@ class Application {
 	  * Start [this] Application
 	  */
 	public function run():Void {
+	    trace('initializing app...');
+	    trace( reqs );
 		initialize(function(?error) {
 		    if (error != null) {
-		        //TODO handle errors
+		        throw error;
 		    }
             else {
                 start();
             }
-		})
+		});
 	}
 
     /**
@@ -57,8 +59,8 @@ class Application {
 	    builder( reqs );
 	}
 
-	public function initialize(?done : VoidCb):VoidPromise {
-	    return reqs.meet( done );
+	public function initialize(done : VoidCb):Void {
+	    reqs.meet( done );
 	}
 
 	private function defaultStorageArea():StorageArea {
