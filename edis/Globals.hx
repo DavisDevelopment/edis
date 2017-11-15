@@ -33,6 +33,16 @@ class Globals {
         #end
     }
 
+#if window
+
+    public static inline function e(x:Dynamic):tannus.html.Element {
+        return new tannus.html.Element( x );
+    }
+
+#end
+
+/* === Global Variables === */
+
 #if underscore
     public static var us(get, never):Dynamic;
     private static inline function get_us() return _;
