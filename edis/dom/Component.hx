@@ -13,7 +13,9 @@ import tannus.html.Element;
 import tannus.html.Elementable;
 import tannus.html.ElStyles;
 import tannus.html.Win;
+import tannus.html.JSFunction;
 
+import haxe.Constraints.Function;
 import Std.*;
 import Std.is as istype;
 import Math.*;
@@ -21,6 +23,7 @@ import tannus.math.TMath.*;
 import tannus.internal.TypeTools;
 import tannus.internal.CompileTime in Ct;
 import edis.dom.Styles;
+import edis.Globals.*;
 
 import haxe.rtti.Meta;
 import tannus.ds.Obj;
@@ -30,7 +33,8 @@ using tannus.ds.ArrayTools;
 using StringTools;
 using tannus.ds.StringUtils;
 using tannus.math.TMath;
-//using foundation.Tools;
+using tannus.html.JSTools;
+using tannus.FunctionTools;
 
 class Component extends EventDispatcher implements ComponentAsset implements Elementable {
 	/* Constructor Function */
@@ -116,7 +120,7 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 				}
 			}
 			catch (error : Dynamic) {
-				printError( error );
+				(untyped __js__('console.error({0})', error));
 			}
 		}
 
@@ -375,6 +379,48 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 			});
 			return pos();
 		}
+	}
+
+	/**
+	  * call a method on [this] Component
+	  */
+	public function invoke<T>(name:String, args:Array<Dynamic>):Null<T> {
+	    var proto:Dynamic = (untyped __js__('jQuery.fn'));
+	    var elem = el.at( 0 );
+	    if (Reflect.hasField(proto, name)) {
+	        var f:JSFunction = new JSFunction(proto.nativeArrayGet(name));
+	        return Reflect.callMethod(el, untyped f, args);
+	    }
+        else if (Reflect.hasField(elem, name)) {
+            return Reflect.callMethod(elem, elem.nag(name), args);
+        }
+        else {
+            throw 'TypeError: Cannot invoke nonexistent "$name" method';
+        }
+	}
+
+	public function method<T:Function>(name:String, ?args:Array<Dynamic>):T {
+	    var m = _method( name );
+	    if (args == null) {
+	        return _.bind(m.method, m.scope);
+	    }
+        else {
+            var _args:Array<Dynamic> = [m.method, m.scope].concat( args );
+            return Reflect.callMethod(_, _.bind, _args);
+        }
+	}
+
+	private function _method(n:String):{method:Dynamic,scope:Dynamic} {
+	    var elem = el.at(0);
+	    if (Reflect.hasField(el, n)) {
+	        return {method:el.nag(n),scope:el};
+	    }
+        else if (Reflect.hasField(elem, n)) {
+            return {method:elem.nag(n),scope:elem};
+        }
+        else {
+            throw 'TypeError: Cannot bind nonexistent "$name" method';
+        }
 	}
 
 	private inline function get_css_property(name : String):Maybe<String> return css.get( name );
