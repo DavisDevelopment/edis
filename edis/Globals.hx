@@ -48,4 +48,14 @@ class Globals {
     private static inline function get_us() return _;
     public static var _:Dynamic = {js.Lib.require('underscore');};
 #end
+
+#if window
+    public static var window(get, never):tannus.html.Win;
+    private static inline function get_window() return tannus.html.Win.current;
+#end
+
+#if node
+    public static var process(get, never):tannus.node.Process;
+    private static inline function get_process() return (untyped __js__('process'));
+#end
 }
