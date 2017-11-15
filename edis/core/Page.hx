@@ -18,6 +18,10 @@ class Page extends Component {
 	public function new(?el : Element):Void {
 		super( el );
 
+        if (el == null) {
+            this.el = new Element('<div></div>');
+        }
+        
 		body = null;
 		title = '';
 		attachments = new Array();
@@ -122,7 +126,7 @@ class Page extends Component {
 	public var body : Null<Body>;
 	public var previousPage : Null<Page> = null;
 
-	@:allow( crayon.Body )
+	@:allow( edis.core.Body )
 	private var opened : Bool = false;
 
 	private var attachments : Array<PageController<Page>>;
