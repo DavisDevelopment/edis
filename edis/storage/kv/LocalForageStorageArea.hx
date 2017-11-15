@@ -90,4 +90,10 @@ class LocalForageStorageArea extends StorageArea {
 /* === Instance Fields === */
 
     private var s : LocalForageInstance;
+
+/* === Statics === */
+
+    public static function create(?options: Dynamic):LocalForageStorageArea {
+        return new LocalForageStorageArea(LocalForage.createInstance( options ));
+    }
 }
