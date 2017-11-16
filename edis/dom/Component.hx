@@ -419,7 +419,7 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
             return {method:elem.nag(n),scope:elem};
         }
         else {
-            throw 'TypeError: Cannot bind nonexistent "$name" method';
+            throw 'TypeError: Cannot bind nonexistent "$n" method';
         }
 	}
 
