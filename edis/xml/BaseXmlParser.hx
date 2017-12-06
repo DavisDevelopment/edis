@@ -4,6 +4,8 @@ import tannus.ds.*;
 import tannus.io.*;
 import tannus.async.*;
 
+import edis.xml.FunctionalNodeHandler.create as fnh;
+
 import Slambda.fn;
 import tannus.math.TMath.*;
 import edis.Globals.*;
@@ -20,9 +22,24 @@ using edis.xml.XmlTools;
 class BaseXmlParser implements INodeHandler {
     public function new() {
         nhr = new Map();
+        _complete = new VoidSignal();
+
+        setup();
     }
 
 /* === Instance Methods === */
+
+    /**
+      * method where parsing procedures are created
+      */
+    private function setup():Void {
+        //
+    }
+
+    public function handleString(xml: String):Void {
+        var doc:Xml = Xml.parse( xml );
+        handle(doc.firstElement());
+    }
 
     public function handle(node: Xml):Void {
         this.node = node;
@@ -35,13 +52,14 @@ class BaseXmlParser implements INodeHandler {
                 onChild( elem );
             }
         }
+        _complete.fire();
     }
 
     /**
       * handle an Element node
       */
     public function onChild(element: Xml):Void {
-        var getnh:Null<Void->INodeHandler> = nhr.get(element.nodeName.toLowerCase());
+        var getnh:Null<Void->INodeHandler> = cast nhr.get(element.nodeName);
         if (getnh != null) {
             var nh:INodeHandler = getnh();
             nh.handle( element );
@@ -59,13 +77,21 @@ class BaseXmlParser implements INodeHandler {
     /**
       * register a node handler
       */
-    private inline function on(nodeName:String, nodeHandlerGetter:Getter<INodeHandler>):Void {
+    public inline function register(nodeName:String, nodeHandlerGetter:Getter<INodeHandler>):Void {
         nhr.set(nodeName, nodeHandlerGetter);
+    }
+
+    public function on(nodeName:String, builder:FunctionalNodeHandler->Void):Void {
+        register(nodeName, fnh.bind(builder));
+    }
+
+    public function then(onComplete: Void->Void):Void {
+        _complete.once( onComplete );
     }
 
     public function onAttribute(k:String,v:String):Void {}
     public function onTextNode(s:String):Void {}
-    public function onComment(s:String):Void {}
+    public function onCommentNode(s:String):Void {}
 
 /* === Instance Fields === */
 
@@ -74,4 +100,5 @@ class BaseXmlParser implements INodeHandler {
 
     private var nhr: Map<String, Getter<INodeHandler>>;
     private var ignoreUnhandled: Bool = true;
+    private var _complete : VoidSignal;
 }
