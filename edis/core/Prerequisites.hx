@@ -47,7 +47,13 @@ class Prerequisites {
     public inline function task(a : Task1):Void add(PTask( a ));
 
     public function meet(done: VoidCb):Void {
-        VoidAsyncs.series(items.map(_vasync), done);
+        var steps = items.map(_vasync);
+        trace( steps );
+        VoidAsyncs.series(steps, function(?error) {
+            done( error );
+            if (error != null)
+                defer( met.announce );
+        });
     }
 
     private function _vasync(item : Prereq):VoidAsync {
