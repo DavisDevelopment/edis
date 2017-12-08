@@ -111,6 +111,10 @@ class Page extends Component {
 	    //TODO
 	}
 
+	public function onClosed(body: Body):Void {
+	    //TODO
+	}
+
 /* === Computed Instance Fields === */
 
 	public var active(get, set):Bool;
@@ -135,6 +139,7 @@ class Page extends Component {
 	public var previousPage : Null<Page> = null;
 
 	@:allow( edis.core.Body )
+	@:allow( edis.core.Application )
 	private var opened : Bool = false;
 
 	private var attachments : Array<PageController<Page>>;
