@@ -107,6 +107,10 @@ class Page extends Component {
 	    //TODO
 	}
 
+	public function onReopened(body: Body):Void {
+	    //TODO
+	}
+
 /* === Computed Instance Fields === */
 
 	public var active(get, set):Bool;
