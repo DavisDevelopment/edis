@@ -24,6 +24,7 @@ class Body extends Component {
 		pageChange = new Signal();
 		currentPage = null;
 		application = app;
+		el.data('edis.core.application', app);
 
 		activate();
 	}
@@ -34,17 +35,17 @@ class Body extends Component {
 	  * Open a Page
 	  */
 	public function open(page : Page):Void {
-		if (currentPage != null) {
-			currentPage.close();
-			page.previousPage = currentPage;
-		}
+		//if (currentPage != null) {
+			//currentPage.close();
+			//page.previousPage = currentPage;
+		//}
 
-		trace('body activated: ${ this._active }');
+		//trace('body activated: ${ this._active }');
 
-		currentPage = page;
-		append( page );
-		currentPage = page;
-		(page.opened ? page.reopen : page.open)( this );
+		//currentPage = page;
+        //append( page );
+		//currentPage = page;
+        (page.opened ? page.reopen : page.open)( this );
 
 		/*
 		if ( !page._active ) {
