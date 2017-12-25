@@ -38,11 +38,15 @@ class BaseXmlParser implements INodeHandler {
 
     public function handleString(xml: String):Void {
         var doc:Xml = Xml.parse( xml );
-        handle(doc.firstElement());
+        //var els = [for (e in doc.elements()) e];
+        for (e in doc.elements()) {
+            handle( e );
+        }
     }
 
     public function handle(node: Xml):Void {
         this.node = node;
+        trace( node );
         if (node.isDocument() || node.isElement()) {
             if (root == null) {
                 root = node;
