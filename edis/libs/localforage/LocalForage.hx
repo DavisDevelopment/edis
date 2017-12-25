@@ -93,11 +93,11 @@ extern class LocalForageExtern {
     public static function keys(?done : Cb<Array<String>>):Null<Prom<Array<String>>>;
     public static function iterate(iterCallback:Dynamic->String->Int->Void, ?done:VoidCb):Null<Prom<Dynamic>>;
     public static function setDriver(driver : String):Void;
-    public static function config(options : Dynamic):Void;
+    public static function config(options : ConfigOptions):Void;
     public static function defineDriver(driverDefinition : DriverDefinition):Void;
     public static function driver():String;
     public static function ready():Prom<Dynamic>;
-    public static function createInstance(?options : Dynamic):LocalForageExternInstance;
+    public static function createInstance(?options : ConfigOptions):LocalForageExternInstance;
 }
 
 extern class LocalForageExternInstance {
@@ -110,11 +110,11 @@ extern class LocalForageExternInstance {
     public function keys(?done : Cb<Array<String>>):Null<Prom<Array<String>>>;
     public function iterate(iterCallback:Dynamic->String->Int->Void, ?done:VoidCb):Null<Prom<Dynamic>>;
     public function setDriver(driver : String):Void;
-    public function config(options : Dynamic):Void;
+    public function config(options : ConfigOptions):Void;
     public function defineDriver(driverDefinition : DriverDefinition):Void;
     public function driver():String;
     public function ready():Prom<Dynamic>;
-    public function createInstance(?options : Dynamic):LocalForageExternInstance;
+    public function createInstance(?options : ConfigOptions):LocalForageExternInstance;
 }
 
 typedef DriverDefinition = {
@@ -127,4 +127,13 @@ typedef DriverDefinition = {
     key: Int->Cb<String>->Void,
     keys: Cb<Array<String>>->Void,
     length: Cb<Int>->Void
+};
+
+typedef ConfigOptions = {
+    name: String,
+    ?driver: String,
+    ?size: Int,
+    ?storeName: String,
+    ?version: Float,
+    ?description: String
 };
