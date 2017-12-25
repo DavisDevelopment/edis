@@ -423,6 +423,18 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
         }
 	}
 
+	public function _resolveElement(x: Dynamic):Maybe<Element> {
+	    if ((x is Component)) {
+	        return cast(x, Component).el;
+	    }
+        else if ((x is Elementable)) {
+            return cast(x, Elementable).toElement();
+        }
+        else {
+            return new Element( x );
+        }
+	}
+
 	private inline function get_css_property(name : String):Maybe<String> return css.get( name );
 	private inline function gcp(n : String):Maybe<String> return get_css_property( n );
 	private inline function gcp_float(n:String):Maybe<Float> return gcp( n ).ternary(Std.parseFloat( _ ), null);
