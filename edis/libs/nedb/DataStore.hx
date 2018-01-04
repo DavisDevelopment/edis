@@ -6,7 +6,7 @@ import tannus.async.*;
 @:jsRequire( 'nedb' )
 extern class DataStore {
     /* Constructor Function */
-    public function new(options : Dynamic):Void;
+    public function new(options: CreateOptions):Void;
 
 /* === Instance Methods === */
 
@@ -29,6 +29,17 @@ extern class DataStore {
     public var persistence : Persistence;
     public var indexes : Dynamic<Index>;
 }
+
+typedef CreateOptions = {
+    ?filename: String,
+    ?inMemoryOnly: Bool,
+    ?timestampData: Bool,
+    ?autoload: Bool,
+    ?onload: ?Dynamic->Void,
+    ?afterSerialization: String->String,
+    ?beforeDeserialization: String->String,
+    ?compareStrings: String->String->Int
+};
 
 typedef IndexOptions = {
     fieldName: String,
