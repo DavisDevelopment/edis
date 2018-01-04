@@ -21,6 +21,10 @@ class Globals {
         #end
     }
 
+    public static inline function wait(time:Int, action:Void->Void):Void {
+        untyped __js__('setTimeout({0}, {1})', action, time);
+    }
+
     public static function now():Float {
         #if window
             return window.performance.now();
