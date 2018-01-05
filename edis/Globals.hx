@@ -37,6 +37,10 @@ class Globals {
         #end
     }
 
+    public static inline function report(error: Dynamic):Void {
+        untyped __js__('console.error({0})', error);
+    }
+
 #if window
 
     public static inline function e(x:Dynamic):tannus.html.Element {
