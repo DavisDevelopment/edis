@@ -120,4 +120,10 @@ abstract QueryDecl (EitherType<Query, Query->Query>) from EitherType<Query, Quer
 
     @:from
     public static inline function fromFunc(f : Query->Query):QueryDecl return new QueryDecl( f );
+
+    @:from
+    public static inline function fromQuery(q: Query):QueryDecl return new QueryDecl( q );
+
+    @:from
+    public static inline function fromObject(o: Dynamic):QueryDecl return new QueryDecl(new Query( o ));
 }
