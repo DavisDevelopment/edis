@@ -354,6 +354,13 @@ class TableWrapper {
         return promise;
     }
 
+    /**
+      * convert a QueryDecl to a Query
+      */
+    private inline function qd(decl: QueryDecl):Query {
+        return decl.toQuery();
+    }
+
 /* === Instance Fields === */
 
     public var store : DataStore;
