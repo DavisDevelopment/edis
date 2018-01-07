@@ -39,15 +39,22 @@ class Query {
     public function regex(k:String, v:RegEx):Query return op(k, fn(_.regex(v)));
     public function size(k:String, v:Int):Query return op(k, fn(_.size(v)));
     public function elemMatch(k:String, v:Dynamic):Query return op(k, fn(_.elemMatch(v)));
+
     private function logical(op:Void->(Dynamic->Dynamic), other:QueryDecl):Query {
-        return new Query(op()([this, qb(other)]));
+        return new Query(op()([
+            this.toObject(),
+            qb( other ).toObject()
+        ]));
     }
+
     public function and(other : QueryDecl):Query {
         return logical(fn(ops.and), other);
     }
+
     public function or(other : QueryDecl):Query {
         return logical(fn(ops.or), other);
     }
+
     public function invert():Query {
         return not( this );
     }
