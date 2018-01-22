@@ -251,7 +251,8 @@ class TableWrapper {
                 return untyped row;
             }
             else {
-                return untyped create(untyped fresh());
+                //return untyped create(untyped fresh());
+                return untyped put(query, fresh());
             }
         }), done);
     }
