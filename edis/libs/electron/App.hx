@@ -3,6 +3,8 @@ package edis.libs.electron;
 import haxe.extern.EitherType;
 import haxe.Constraints.Function;
 
+import electron.NativeImage;
+
 import tannus.sys.*;
 
 typedef App = ExtApp;
@@ -25,7 +27,7 @@ extern class ExtApp {
 	public static function _getPath(name : ExtAppNamedPath):String;
 	public static function getVersion():String;
 	public static function getName():String;
-	public static function makeSingleInstance(f : Array<String>->String->Void):Void;
+	public static function makeSingleInstance(f : Array<String>->String->Void):Bool;
 	public static function releaseSingleInstance():Void;
 	public static function getAppMemoryInfo():Array<{pid:Int,memory:MemoryInfo}>;
 
