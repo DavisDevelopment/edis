@@ -109,6 +109,18 @@ class BaseXmlParser implements INodeHandler {
         return (nhr.exists(nodeName)?nhr[nodeName]:nhr.set(nodeName, new Array()));
     }
 
+    /**
+      * register multiple handlers at once
+      */
+    public inline function registers(nodeNames:Iterable<String>, nodeHandlerGetter:Getter<INodeHandler>):Void {
+        for (n in nodeNames) {
+            register(n, nodeHandlerGetter);
+        }
+    }
+
+    /**
+      * register a FunctionalNodeHandler
+      */
     public function on(nodeName:String, builder:FunctionalNodeHandler->Void):Void {
         register(nodeName, fnh.bind(builder));
     }
