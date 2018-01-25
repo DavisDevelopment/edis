@@ -89,6 +89,10 @@ class BaseXmlParser implements INodeHandler {
         //}
     }
 
+    public inline function onElement(f: Xml->Void):Void {
+        _element.on( f );
+    }
+
     /**
       * register a node handler
       */
