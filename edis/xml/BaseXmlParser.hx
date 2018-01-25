@@ -23,6 +23,7 @@ class BaseXmlParser implements INodeHandler {
     public function new() {
         nhr = new Dict();
         _complete = new VoidSignal();
+        _element = new Signal();
 
         setup();
     }
@@ -63,19 +64,29 @@ class BaseXmlParser implements INodeHandler {
       * handle an Element node
       */
     public function onChild(element: Xml):Void {
-        var getnh:Null<Void->INodeHandler> = cast nhr.get(element.nodeName);
-        if (getnh != null) {
-            var nh:INodeHandler = getnh();
-            nh.handle( element );
-        }
-        else {
-            if (ignoreUnhandled) {
-                trace('Warning: unhandled <${element.nodeName}/>');
-            }
-            else {
-                throw 'Error: Unhandled <${element.nodeName}/>';
+        _element.call( element );
+
+        var nhgl:Null<Array<Void->INodeHandler>> = cast nhr.get(element.nodeName.toLowerCase());
+        if (nhgl != null) {
+            var nh:INodeHandler;
+            for (getnh in nhgl) {
+                nh = getnh();
+                nh.handle( element );
             }
         }
+        //var getnh:Null<Void->INodeHandler> = cast nhr.get(element.nodeName.toLowerCase());
+        //if (getnh != null) {
+            //var nh:INodeHandler = getnh();
+            //nh.handle( element );
+        //}
+        //else {
+            //if (ignoreUnhandled) {
+                //trace('Warning: unhandled <${element.nodeName}/>');
+            //}
+            //else {
+                //throw 'Error: Unhandled <${element.nodeName}/>';
+            //}
+        //}
     }
 
     /**
@@ -111,5 +122,6 @@ class BaseXmlParser implements INodeHandler {
 
     private var nhr: Dict<String, Array<Getter<INodeHandler>>>;
     private var ignoreUnhandled: Bool = true;
+    private var _element: Signal<Xml>;
     private var _complete : VoidSignal;
 }
