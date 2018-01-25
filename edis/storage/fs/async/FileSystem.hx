@@ -7,6 +7,7 @@ import tannus.async.*;
 import tannus.async.promises.*;
 
 import edis.storage.fs.async.impl.*;
+import edis.storage.fs.async.impl.IReadStream;
 
 import Slambda.fn;
 
@@ -17,6 +18,7 @@ using StringTools;
 using tannus.ds.StringUtils;
 using Slambda;
 using tannus.ds.ArrayTools;
+using tannus.async.Asyncs;
 
 @:keep
 @:expose
@@ -47,7 +49,7 @@ class FileSystem {
 
     public function readDirectory(path:Path, recursive:Bool=false, ?done:Cb<Array<String>>):ArrayPromise<String> return i.readDirectory(path, recursive, done);
 
-    public function write(path:Path, data:ByteArray, ?done:VoidCb):VoidPromise return i.write(path, data, done);
+    public function write(path:Path, data:FileWriteData, ?done:VoidCb):VoidPromise return i.write(path, data, done);
 
     public function stat(path:Path, ?done:Cb<FileStat>):Promise<FileStat> return i.stat(path, done);
 
