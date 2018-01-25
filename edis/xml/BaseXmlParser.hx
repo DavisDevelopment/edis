@@ -122,7 +122,13 @@ class BaseXmlParser implements INodeHandler {
       * register a FunctionalNodeHandler
       */
     public function on(nodeName:String, builder:FunctionalNodeHandler->Void):Void {
-        register(nodeName, fnh.bind(builder));
+        if (nodeName.has(',')) {
+            var nodeNames = nodeName.split(',').map(s->s.nullEmpty()).compact().unique();
+            registers(nodeNames, fnh.bind(builder));
+        }
+        else {
+            register(nodeName, fnh.bind(builder));
+        }
     }
 
     public function then(onComplete: Void->Void):Void {
