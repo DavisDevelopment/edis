@@ -15,9 +15,9 @@ using tannus.FunctionTools;
 class Globals {
     public static function defer(action:Void->Void):Void {
         #if node
-            untyped __js__('process.nextTick({0})', action);
+            untyped __js__('(setImmediate||process.nextTick)({0})', action);
         #else
-            untyped __js__('setTimeout({0}, 0)', action);
+            untyped __js__('(setImmediate||(setTimeout && x => setTimeout(x, 0)))({0})', action);
         #end
     }
 
