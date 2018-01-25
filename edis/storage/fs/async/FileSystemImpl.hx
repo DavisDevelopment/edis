@@ -70,6 +70,10 @@ class FileSystemImpl {
         throw 'not implemented';
     }
 
+    public function truncate(path:Path, len:Int, ?done:VoidCb):VoidPromise {
+        throw 'not implemented';
+    }
+
 /* === Utility Methods === */
 
     /**
@@ -81,4 +85,8 @@ class FileSystemImpl {
         }
         return promise;
     }
+
+/* === Instance Fields === */
+
+    private var root: Null<Path>;
 }
