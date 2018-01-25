@@ -21,7 +21,7 @@ using edis.xml.XmlTools;
 
 class BaseXmlParser implements INodeHandler {
     public function new() {
-        nhr = new Map();
+        nhr = new Dict();
         _complete = new VoidSignal();
 
         setup();
@@ -82,7 +82,14 @@ class BaseXmlParser implements INodeHandler {
       * register a node handler
       */
     public inline function register(nodeName:String, nodeHandlerGetter:Getter<INodeHandler>):Void {
-        nhr.set(nodeName, nodeHandlerGetter);
+        handlerArray(nodeName.toLowerCase()).push( nodeHandlerGetter );
+    }
+
+    /**
+      * get the list of handler-getters for a given nodeName
+      */
+    private inline function handlerArray(nodeName: String):Array<Getter<INodeHandler>> {
+        return (nhr.exists(nodeName)?nhr[nodeName]:nhr.set(nodeName, new Array()));
     }
 
     public function on(nodeName:String, builder:FunctionalNodeHandler->Void):Void {
@@ -102,7 +109,7 @@ class BaseXmlParser implements INodeHandler {
     public var root : Xml;
     public var node: Xml;
 
-    private var nhr: Map<String, Getter<INodeHandler>>;
+    private var nhr: Dict<String, Array<Getter<INodeHandler>>>;
     private var ignoreUnhandled: Bool = true;
     private var _complete : VoidSignal;
 }
