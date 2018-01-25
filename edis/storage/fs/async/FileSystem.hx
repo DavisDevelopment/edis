@@ -47,7 +47,7 @@ class FileSystem {
 
     public function read(path:Path, ?offset:Int, ?length:Int, ?done:Cb<ByteArray>):Promise<ByteArray> return i.read(path, offset, length, done);
 
-    public function readDirectory(path:Path, recursive:Bool=false, ?done:Cb<Array<String>>):ArrayPromise<String> return i.readDirectory(path, recursive, done);
+    public function readDirectory(path:Path, ?done:Cb<Array<String>>):ArrayPromise<String> return i.readDirectory(path, done);
 
     public function write(path:Path, data:FileWriteData, ?done:VoidCb):VoidPromise return i.write(path, data, done);
 
@@ -55,6 +55,9 @@ class FileSystem {
 
     public function truncate(path:Path, len:Int, ?done:VoidCb):VoidPromise return i.truncate(path, len, done);
 
+    public function createReadStream(path:Path, ?options:CreateFileReadStreamOptions, ?callback:Cb<FileReadStream>):Promise<FileReadStream> {
+        return i.createReadStream(path, options).transform(x -> new FileReadStream( x )).toAsync( callback );
+    }
 
 
 /* === Instance Fields === */
