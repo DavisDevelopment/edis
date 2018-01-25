@@ -27,6 +27,7 @@ class FunctionalNodeHandler extends BaseNodeHandler {
         _attrs = new Dict();
         _nhr = new Dict();
         _complete = new VoidSignal();
+        _begin = new VoidSignal();
         _text = new Signal();
         _child = new Signal();
         _attr = new Signal2();
@@ -40,6 +41,7 @@ class FunctionalNodeHandler extends BaseNodeHandler {
         this.node = node;
         for (builder in _inits)
             builder( this );
+        _begin.fire();
 
         _srattrs = new Set();
         _srattrs.pushMany( _reqattrs );
@@ -94,6 +96,10 @@ class FunctionalNodeHandler extends BaseNodeHandler {
 
     public inline function then(onComplete: Void->Void):Void {
         _complete.once( onComplete );
+    }
+
+    public inline function onNodeObtained(f: Xml->Void):Void {
+        _begin.once(function() f( node ));
     }
 
     public function accept<T>(attr:String, required:Bool=false, ?transform:String->T, ?extracted:T->Void):AttrHandler<T> {
@@ -241,6 +247,7 @@ class FunctionalNodeHandler extends BaseNodeHandler {
     private var _srattrs: Set<String>;
     private var _attrs: Dict<String, AttrHandler<Dynamic>>;
     private var _nhr: Dict<String, Getter<INodeHandler>>;
+    private var _begin: VoidSignal;
     private var _complete: VoidSignal;
     private var _text: Signal<String>;
     private var _child: Signal<Xml>;
