@@ -39,10 +39,10 @@ class BaseXmlParser implements INodeHandler {
 
     public function handleString(xml: String):Void {
         var doc:Xml = Xml.parse( xml );
-        //var els = [for (e in doc.elements()) e];
-        for (e in doc.elements()) {
-            handle( e );
-        }
+        if (!doc.isDocument())
+            throw 'WTFError: Xml-tree root is not a document node';
+
+        handle( doc );
     }
 
     public function handle(node: Xml):Void {
