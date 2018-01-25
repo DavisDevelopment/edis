@@ -41,6 +41,13 @@ class Globals {
         untyped __js__('console.error({0})', error);
     }
 
+    public static inline function echo<T>(x: T):T {
+        #if !(release || notrace)
+        untyped __js__('console.log({0})', x);
+        #end
+        return x;
+    }
+
 #if window
 
     public static inline function e(x:Dynamic):tannus.html.Element {
