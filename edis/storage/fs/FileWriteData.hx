@@ -12,6 +12,7 @@ import Slambda.fn;
 import haxe.Serializer;
 import haxe.Unserializer;
 import haxe.extern.EitherType;
+import haxe.Constraints.Function;
 import haxe.io.Bytes;
 
 using StringTools;
@@ -30,20 +31,19 @@ abstract FileWriteData (TFileWriteData) from TFileWriteData to TFileWriteData {
     @:to
     public function toByteArray():ByteArray {
         if ((this is tannus.io.Binary)) {
-            return cast this;
+            return this;
         }
         else if ((this is tannus.io.BinaryData)) {
-            return ByteArray.ofData( this );
+            return ByteArray.ofData(untyped this);
         }
         else if ((this is String)) {
-            return ByteArray.ofString(cast this);
+            return ByteArray.ofString( this );
         }
         else if ((this is Bytes)) {
-            return ByteArray.fromBytes(cast this);
+            return ByteArray.fromBytes( this );
         }
         else if (Reflect.isFunction( this )) {
-            var thunk:Thunk<FileWriteData> = new Thunk(untyped this);
-            return thunk.resolve().toByteArray();
+            return fromDynamic((untyped this)()).toByteArray();
         }
         else {
             throw 'TypeError: Invalid FileWriteData';
@@ -61,9 +61,7 @@ abstract FileWriteData (TFileWriteData) from TFileWriteData to TFileWriteData {
     public static inline function fromByteArray<T:ByteArray>(bytes: T):FileWriteData return new FileWriteData(cast bytes);
 
     @:from
-    public static inline function fromThunk<T:TFileWriteData>(thunk: Thunk<T>):FileWriteData {
-        return new FileWriteData(thunk.resolve());
-    }
+    public static inline function fromFunc(f: Function):FileWriteData return new FileWriteData(untyped f);
 
     @:from
     public static function fromDynamic(x: Dynamic):FileWriteData {
@@ -80,7 +78,7 @@ abstract FileWriteData (TFileWriteData) from TFileWriteData to TFileWriteData {
             return fromBytes(cast x);
         }
         else if (Reflect.isFunction( x )) {
-            return fromThunk(cast x);
+            return fromFunc( x );
         }
         else {
             throw 'TypeError: Invalid FileWriteData';
@@ -91,4 +89,4 @@ abstract FileWriteData (TFileWriteData) from TFileWriteData to TFileWriteData {
 /* === Instance Fields === */
 }
 
-typedef TFileWriteData = EitherType<EitherType<String, ByteArray>, EitherType<Bytes, Thunk<TFileWriteData>>>;
+typedef TFileWriteData = EitherType<EitherType<String, ByteArray>, EitherType<Bytes, Void->TFileWriteData>>;
