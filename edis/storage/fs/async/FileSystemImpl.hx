@@ -6,6 +6,8 @@ import tannus.sys.Path;
 import tannus.async.*;
 import tannus.async.promises.*;
 
+import edis.storage.fs.async.impl.IReadStream;
+
 import Slambda.fn;
 
 import haxe.Serializer;
@@ -19,16 +21,16 @@ using tannus.ds.ArrayTools;
 class FileSystemImpl {
     /* Constructor Function */
     public function new():Void {
-        //
+        root = null;
     }
 
 /* === Instance Methods === */
 
-    public function exists(path:Path, ?callback:Cb<Bool>):Promise<Bool> {
+    public function exists(path:Path, ?callback:Cb<Bool>):BoolPromise {
         throw 'not implemented';
     }
 
-    public function isDirectory(path:Path, ?callback:Cb<Bool>):Promise<Bool> {
+    public function isDirectory(path:Path, ?callback:Cb<Bool>):BoolPromise {
         throw 'not implemented';
     }
 
@@ -56,11 +58,11 @@ class FileSystemImpl {
         throw 'not implemented';
     }
 
-    public function readDirectory(path:Path, recursive:Bool=false, ?done:Cb<Array<Path>>):ArrayPromise<Path> {
+    public function readDirectory(path:Path, ?done:Cb<Array<String>>):ArrayPromise<String> {
         throw 'not implemented';
     }
 
-    public function write(path:Path, data:ByteArray, ?done:VoidCb):VoidPromise {
+    public function write(path:Path, data:FileWriteData, ?done:VoidCb):VoidPromise {
         throw 'not implemented';
     }
 
