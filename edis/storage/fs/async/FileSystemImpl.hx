@@ -74,6 +74,10 @@ class FileSystemImpl {
         throw 'not implemented';
     }
 
+    public function createReadStream(path:Path, ?options:CreateFileReadStreamOptions, ?done:Cb<IFileReadStream>):Promise<IFileReadStream> {
+        throw 'not implemented';
+    }
+
 /* === Utility Methods === */
 
     /**
