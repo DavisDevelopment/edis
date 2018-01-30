@@ -20,6 +20,7 @@ extern class ExtApp {
 	public static function exit(?code : Int):Void;
 	public static function relaunch(?options : ExtAppRelaunchOptions):Void;
 	public static function isReady():Bool;
+	public static function isUnityRunning():Bool;
 	public static function focus():Void;
 	@:native('getAppPath')
 	public static function _getAppPath():String;
