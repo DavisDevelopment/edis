@@ -31,6 +31,7 @@ extern class ExtApp {
 	public static function makeSingleInstance(f : Array<String>->String->Void):Bool;
 	public static function releaseSingleInstance():Void;
 	public static function getAppMemoryInfo():Array<{pid:Int,memory:MemoryInfo}>;
+	public static function getAppMetrics():Array<ProcessMetric>;
 
 	@:overload(function(path:String,o:{size:String},cb:Null<Dynamic>->NativeImage->Void):Void {})
 	public static function getFileIcon(path:String, callback:Null<Dynamic>->NativeImage->Void):Void;
@@ -52,6 +53,18 @@ typedef MemoryInfo = {
     peakWorkingSetSize: Int,
     privateBytes: Int,
     sharedBytes: Int
+};
+
+typedef CPUUsage = {
+    percentCPUUsage: Float,
+    idleWakeupsPerSecond: Float
+};
+
+typedef ProcessMetric = {
+    pid: Int,
+    type: String,
+    memory: MemoryInfo,
+    cpu: CPUUsage
 };
 
 typedef ExtAppRelaunchOptions = {
