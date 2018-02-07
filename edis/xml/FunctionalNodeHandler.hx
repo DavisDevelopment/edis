@@ -33,6 +33,8 @@ class FunctionalNodeHandler extends BaseNodeHandler {
         _attr = new Signal2();
         _allattrs = new Signal();
         _attrflags = new Signal();
+
+        _buffrs = new Dict();
     }
 
 /* === Instance Methods === */
@@ -158,8 +160,23 @@ class FunctionalNodeHandler extends BaseNodeHandler {
         });
     }
 
-    public inline function getText(f: String->Void):Void {
-        _text.once( f );
+    /**
+      * get the whole of [this] node's textual content
+      */
+    public function getText(f: String->Void):Void {
+        //_text.once( f );
+        //buffer('txt', '');
+        var result:String = '';
+        _text.on(function(chunk) {
+            //buffer('txt', chunk);
+            result += chunk;
+            trace('text-chunk! "$result"');
+        });
+        then(function() {
+            //var full = closebuffer('txt').join('');
+            //f( full );
+            return result;
+        });
     }
 
     public function getTextAs<T>(f:T->Void, m:String->T):Void {
@@ -225,7 +242,7 @@ class FunctionalNodeHandler extends BaseNodeHandler {
     }
 
     /**
-      * 
+      * called each time a child-node is encountered
       */
     override function onChild(child: Xml):Void {
         var gnh = _nhr.get(child.nodeName);
@@ -236,8 +253,38 @@ class FunctionalNodeHandler extends BaseNodeHandler {
         _child.call( child );
     }
 
+    /**
+      * called each time a text node is encountered
+      */
     override function onTextNode(text:String):Void {
         _text.call( text );
+    }
+
+    /**
+      * [create and] return a 'buffer' array
+      */
+    private function getbuffer<T>(buffer_id:String):Array<T> {
+        if (!_buffrs.exists(buffer_id)) {
+            return untyped (_buffrs[buffer_id] = untyped new Array());
+        }
+        return untyped _buffrs.get( buffer_id );
+    }
+
+    private inline function rmbuffer(buffer_id: String):Bool {
+        return _buffrs.remove( buffer_id );
+    }
+
+    private inline function buffer<T>(buffer_id:String, buffer_entry:T):Void {
+        getbuffer( buffer_id ).push( buffer_entry );
+    }
+
+    private function closebuffer<T>(buffer_id:String, ?last_entry:T):Array<T> {
+        var res:Array<T> = untyped getbuffer( buffer_id );
+        if (last_entry != null) {
+            res.push( last_entry );
+        }
+        rmbuffer( buffer_id );
+        return res;
     }
 
 /* === Instance Fields === */
@@ -254,6 +301,9 @@ class FunctionalNodeHandler extends BaseNodeHandler {
     private var _attr: Signal2<String, String>;
     private var _allattrs: Signal<Map<String, String>>;
     private var _attrflags: Signal<Set<String>>;
+
+    // dict used for buffering data
+    private var _buffrs: Dict<String, Array<Dynamic>>;
 
 /* === Static Methods === */
 
