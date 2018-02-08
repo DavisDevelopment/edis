@@ -173,9 +173,7 @@ class FunctionalNodeHandler extends BaseNodeHandler {
             trace('text-chunk! "$result"');
         });
         then(function() {
-            //var full = closebuffer('txt').join('');
-            //f( full );
-            return result;
+            f( result );
         });
     }
 
