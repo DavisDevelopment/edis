@@ -49,10 +49,11 @@ typedef FileReadStreamOptions = {
 };
 
 typedef CreateFileReadStreamOptions = {
+    ?flags: String,
     ?start: Int,
     ?end: Int,
     ?encoding: String,
     ?autoClose: Bool,
-    ?chunkSize: Int,
-    ?forceAsync: Bool
+    ?highWaterMark: Int
+    //?forceAsync: Bool
 };
