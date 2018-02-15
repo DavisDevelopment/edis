@@ -11,7 +11,9 @@ import tannus.node.Buffer;
 import tannus.node.Fs;
 import tannus.node.Process;
 import tannus.node.Error;
+import tannus.node.ReadableStream;
 
+import edis.streams.ReadableByteArrayStream;
 import edis.storage.fs.async.impl.IReadStream;
 
 import Slambda.fn;
@@ -189,15 +191,17 @@ class NodeFileSystemImpl extends FileSystemImpl {
         return Fs.truncate.bind(ps(path), len, _).toPromise().toAsync( done );
     }
 
-    override function createReadStream(path:Path, ?options:CreateFileReadStreamOptions, ?callback:Cb<IFileReadStream>):Promise<IFileReadStream> {
-        return new Promise<IFileReadStream>(function(accept, reject) {
-            var topts = rstreamOptions( options );
-            var ns = Fs.createReadStream(ps(path), topts._0);
-            var res = new NodeFileReadStreamImpl( ns );
-            res.setOptions( topts._1 );
-            res.open();
-            accept( res );
-        }).toAsync( callback );
+    override function createReadStream(path:Path, ?options:CreateFileReadStreamOptions, ?callback:Cb<ReadableStream<ByteArray>>):ReadableStream<ByteArray> {
+        //var topts = rstreamOptions( options );
+        var nrs:FileReadStream = Fs.createReadStream(ps( path ), (untyped options));
+
+        var res:ReadableStream<ByteArray> = cast new WrappedReadableByteArrayStream(cast nrs);
+        //res.setOptions( topts._1 );
+        //res.open();
+        if (callback != null) {
+            //
+        }
+        return res;
     }
 
     /**
@@ -216,32 +220,5 @@ class NodeFileSystemImpl extends FileSystemImpl {
 
     private function tb(bytes: ByteArray):Buffer {
         return bytes.getData();
-    }
-
-    private function rstreamOptions(?o: CreateFileReadStreamOptions):Tup2<Null<CreateReadStreamOptions>, FileReadStreamOptions> {
-        if (o == null)
-            return new Tup2(null, {
-                autoClose: true,
-                forceAsync: false
-            });
-        var nso:CreateReadStreamOptions={};
-        var so:FileReadStreamOptions = {
-            autoClose: true,
-            forceAsync: false
-        };
-        var t = new Tup2(nso, so);
-        if (o.start != null) {
-            nso.start = so.start = o.start;
-        }
-        if (o.end != null) {
-            nso.end = so.start = o.end;
-        }
-        if (o.autoClose != null) {
-            nso.autoClose = so.autoClose = o.autoClose;
-        }
-        if (o.forceAsync != null)
-            so.forceAsync = o.forceAsync;
-        so.chunkSize = o.chunkSize;
-        return t;
     }
 }

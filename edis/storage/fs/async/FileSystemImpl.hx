@@ -8,6 +8,12 @@ import tannus.async.promises.*;
 
 import edis.storage.fs.async.impl.IReadStream;
 
+import tannus.node.ReadableStream;
+import tannus.node.WritableStream;
+import tannus.node.DuplexStream;
+import tannus.node.TransformStream;
+import tannus.node.*;
+
 import Slambda.fn;
 
 import haxe.Serializer;
@@ -74,7 +80,7 @@ class FileSystemImpl {
         throw 'not implemented';
     }
 
-    public function createReadStream(path:Path, ?options:CreateFileReadStreamOptions, ?done:Cb<IFileReadStream>):Promise<IFileReadStream> {
+    public function createReadStream(path:Path, ?options:CreateFileReadStreamOptions, ?done:Cb<ReadableStream<ByteArray>>):ReadableStream<ByteArray> {
         throw 'not implemented';
     }
 

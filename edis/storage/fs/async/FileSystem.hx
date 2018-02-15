@@ -6,8 +6,15 @@ import tannus.sys.Path;
 import tannus.async.*;
 import tannus.async.promises.*;
 
+import tannus.node.ReadableStream;
+import tannus.node.WritableStream;
+import tannus.node.DuplexStream;
+import tannus.node.TransformStream;
+import tannus.node.*;
+
 import edis.storage.fs.async.impl.*;
 import edis.storage.fs.async.impl.IReadStream;
+import edis.streams.*;
 
 import Slambda.fn;
 
@@ -55,8 +62,8 @@ class FileSystem {
 
     public function truncate(path:Path, len:Int, ?done:VoidCb):VoidPromise return i.truncate(path, len, done);
 
-    public function createReadStream(path:Path, ?options:CreateFileReadStreamOptions, ?callback:Cb<FileReadStream>):Promise<FileReadStream> {
-        return i.createReadStream(path, options).transform(x -> new FileReadStream( x )).toAsync( callback );
+    public function createReadStream(path:Path, ?options:CreateFileReadStreamOptions, ?callback:Cb<ReadableStream<ByteArray>>):ReadableStream<ByteArray> {
+        return i.createReadStream(path, options, callback);
     }
 
 
