@@ -84,6 +84,10 @@ class FileSystemImpl {
         throw 'not implemented';
     }
 
+    public function createWriteStream(path:Path, ?options:CreateFileWriteStreamOptions, ?done:Cb<WritableStream<ByteArray>>):WritableStream<ByteArray> {
+        throw 'not implemented';
+    }
+
 /* === Utility Methods === */
 
     /**

@@ -12,8 +12,10 @@ import tannus.node.Fs;
 import tannus.node.Process;
 import tannus.node.Error;
 import tannus.node.ReadableStream;
+import tannus.node.WritableStream;
 
 import edis.streams.ReadableByteArrayStream;
+import edis.streams.WritableByteArrayStream;
 import edis.storage.fs.async.impl.IReadStream;
 
 import Slambda.fn;
@@ -200,6 +202,15 @@ class NodeFileSystemImpl extends FileSystemImpl {
         //res.open();
         if (callback != null) {
             //
+        }
+        return res;
+    }
+
+    override function createWriteStream(path:Path, ?options:CreateFileWriteStreamOptions, ?done:Cb<WritableStream<ByteArray>>):WritableStream<ByteArray> {
+        var nws:FileWriteStream = cast Fs.createWriteStream(ps( path ), (untyped options));
+        var res:WritableStream<ByteArray> = cast new WrappedWritableByteArrayStream(cast nws);
+        if (done != null) {
+            done(null, res);
         }
         return res;
     }
