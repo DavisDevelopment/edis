@@ -57,3 +57,10 @@ typedef CreateFileReadStreamOptions = {
     ?highWaterMark: Int
     //?forceAsync: Bool
 };
+
+typedef CreateFileWriteStreamOptions = {
+    ?flags: String,
+    ?encoding: String,
+    ?autoClose: Bool,
+    ?start: Int
+};
