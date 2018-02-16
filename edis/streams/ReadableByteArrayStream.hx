@@ -23,6 +23,9 @@ class ReadableByteArrayStream extends ReadableStream<ByteArray> {
 
 /* === Instance Methods === */
 
+    /**
+      * create a ReadableStream<Buffer> from [this]
+      */
     public function toBufferStream():ReadableStream<Buffer> {
         function bread(self:ReadableStream<Buffer>, ?size:Int) {
             function da(chunk: ByteArray) {
