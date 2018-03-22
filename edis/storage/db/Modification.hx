@@ -162,12 +162,17 @@ class Modification {
         f( o );
         return o;
     }
-    private inline function _bo(f : Object->Void):Object return _buildObject( f );
-    private function _bokv(k:String, v:Dynamic):Object {
+    private static inline function _bo(f : Object->Void):Object return _buildObject( f );
+
+    private static function _bokv(k:String, v:Dynamic):Object {
         return _buildObject(function(o) {
             o.nas(k, v);
         });
     }
+    private static function _bopv(op:String, args:Dynamic):Object {
+        return _bokv(opname(op), sanitize(args));
+    }
+
  
 
 /* === Instance Fields === */
