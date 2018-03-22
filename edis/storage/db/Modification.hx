@@ -150,7 +150,9 @@ class Modification {
     /**
       * compute the key for an operator
       */
-    private inline function opname(name:String):String return '$$$name';
+    private static inline function opname(name: String):String {
+        return '$$$name';
+    }
 
     /**
       * utility method to construct an Object
