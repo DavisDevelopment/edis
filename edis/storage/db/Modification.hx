@@ -141,6 +141,13 @@ class Modification {
     }
 
     /**
+      * convert a comma-separated string-list of indices into an Array of indices
+      */
+    private static function pluralize(i: String):Array<String> {
+        return (i.split(',').filter.fn(_.hasContent()).map.fn(_.trim()));
+    }
+
+    /**
       * compute the key for an operator
       */
     private inline function opname(name:String):String return '$$$name';
