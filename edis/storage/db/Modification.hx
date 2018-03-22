@@ -34,8 +34,9 @@ class Modification {
         return _increment(_bokv(index, value));
     }
 
-    public function unset(index:String, value:Dynamic):Modification {
-        return _unset(_bokv(index, value));
+    public function unset(index: String):Modification {
+        return _unset(_bokiv(pluralize(index), true));
+        //return _unset(_bokv(index, value));
     }
 
     public function push(index:String, value:Dynamic):Modification {
