@@ -41,8 +41,10 @@ class Operators {
     public function lte(value : Dynamic):Dynamic return op('lte', value);
     public function gt(value : Dynamic):Dynamic return op('gt', value);
     public function gte(value : Dynamic):Dynamic return op('gte', value);
-    public function has(value : Dynamic):Dynamic return op('in', value);
-    public function nhas(value : Dynamic):Dynamic return op('nin', value);
+
+    public function has(values : Array<Dynamic>):Dynamic return op('in', values);
+    public function nhas(values : Array<Dynamic>):Dynamic return op('nin', values);
+
     public function exists(doesExist:Bool=true):Dynamic return op('exists', doesExist);
     public function regex(pattern:RegEx):Dynamic return op('regex', (untyped pattern).r);
     public function size(size:Int):Dynamic return op('size', size);
