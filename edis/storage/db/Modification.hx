@@ -50,11 +50,9 @@ class Modification {
         return _addToSet(_bokv(index, value));
     }
 
-    public function pull(index:String, value:Int=1):Modification {
-        if (value < 0)
-            value = -1;
-        else value = 1;
-        return _pull(_bokv(index, value));
+    public function pull(index:String, what:Dynamic):Modification {
+        //return _pull(_bokv(index, value));
+        return _pull(_bokv(index, sanitize( what )));
     }
 
     public function min(index:String, value:Dynamic):Modification {
