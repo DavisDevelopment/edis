@@ -128,7 +128,7 @@ class Modification {
     /**
       * sanitize an Object
       */
-    private function sanitize(v : Dynamic):Dynamic {
+    private static function sanitize(v : Dynamic):Dynamic {
         if ((v is Modification)) {
             return cast(v, Modification).toObject();
         }
