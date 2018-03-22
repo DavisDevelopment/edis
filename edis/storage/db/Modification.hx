@@ -65,16 +65,47 @@ class Modification {
         return _max(_bokv(index, value));
     }
 
+/* === Internal Methods === */
 
-    public function _set(data:Dynamic):Modification return op('set', data);
-    public function _increment(data:Dynamic):Modification return op('inc', data);
-    public function _unset(data:Dynamic):Modification return op('unset', data);
-    public function _push(d:Dynamic):Modification return op('push', d);
-    public function _pop(d:Dynamic):Modification return op('pop', d);
-    public function _addToSet(d:Dynamic):Modification return op('addToSet', d);
-    public function _pull(d:Dynamic):Modification return op('pull', d);
-    public function _min(d:Dynamic):Modification return op('min', d);
-    public function _max(d:Dynamic):Modification return op('max', d);
+    public function _each(data: Array<Dynamic>):Dynamic {
+        return _bokv(opname('each'), data);
+    }
+
+    public function _set(data: Dynamic):Modification {
+        return op('set', data);
+    }
+
+    public function _increment(data: Dynamic):Modification {
+        return op('inc', data);
+    }
+
+    public function _unset(data: Dynamic):Modification {
+        return op('unset', data);
+    }
+
+    public function _push(d: Dynamic):Modification {
+        return op('push', d);
+    }
+
+    public function _pop(d: Dynamic):Modification {
+        return op('pop', d);
+    }
+
+    public function _addToSet(d: Dynamic):Modification {
+        return op('addToSet', d);
+    }
+
+    public function _pull(d: Dynamic):Modification {
+        return op('pull', d);
+    }
+
+    public function _min(d: Dynamic):Modification {
+        return op('min', d);
+    }
+
+    public function _max(d: Dynamic):Modification {
+        return op('max', d);
+    }
 
 /* === Instance Methods === */
 
