@@ -7,6 +7,7 @@ import tannus.async.*;
 import Slambda.fn;
 import tannus.math.TMath.*;
 import haxe.extern.EitherType;
+import haxe.Constraints.Function;
 
 using StringTools;
 using tannus.ds.StringUtils;
@@ -100,5 +101,9 @@ class Operators {
       */
     private function opname(name:String):String {
         return '$$$name';
+    }
+
+    public static inline function expr(body: Operators->Dynamic):Dynamic {
+        return body(new Operators());
     }
 }
