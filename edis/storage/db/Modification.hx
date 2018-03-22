@@ -173,6 +173,39 @@ class Modification {
         return _bokv(opname(op), sanitize(args));
     }
 
+    /**
+      * magically build out multi-property object functionally
+      */
+    private static function _bokiv(keys:Iterable<String>, value:Dynamic):Object {
+        var vit:Null<Iterator<Dynamic>> = null;
+
+        function val(key: String):Dynamic {
+            if (Reflect.isFunction( value )) {
+                return value( key );
+            }
+            else if (vit != null) {
+                if (vit.hasNext()) {
+                    return vit.next();
+                }
+                else return null;
+            }
+            else if (vit == null && (Reflect.isObject(value) && Reflect.hasField(value, 'iterator') && Reflect.isFunction(Reflect.field(value, 'iterator')))) {
+                vit = cast value.iterator();
+                return val( key );
+            }
+            else {
+                return value;
+            }
+        }
+
+        return _bo(function(o: Object) {
+            var it = keys.iterator(), k:String;
+            while (it.hasNext()) {
+                k = it.next();
+                o.nas(k, val( k ));
+            }
+        });
+    }
  
 
 /* === Instance Fields === */
