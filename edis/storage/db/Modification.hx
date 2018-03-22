@@ -43,12 +43,20 @@ class Modification {
         return _push(_bokv(index, value));
     }
 
+    public function pushMany(index:String, values:Array<Dynamic>):Modification {
+        return push(index, _each( values ));
+    }
+
     public function pop(index:String, value:Dynamic):Modification {
         return _pop(_bokv(index, value));
     }
 
     public function addToSet(index:String, value:Dynamic):Modification {
         return _addToSet(_bokv(index, value));
+    }
+
+    public function addAllToSet(index:String, values:Array<Dynamic>):Modification {
+        return _addToSet(_bokv(index, _bopv('each', values)));
     }
 
     public function pull(index:String, what:Dynamic):Modification {
