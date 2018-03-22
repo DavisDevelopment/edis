@@ -126,6 +126,19 @@ class Modification {
     }
 
     /**
+      * build and return an operator-expression
+      */
+    public function opv(spec: EitherType<Function, {op:String, ?operand:Dynamic}>):Dynamic {
+        if (Reflect.isFunction( spec )) {
+            return Operators.expr(untyped spec);
+        }
+        else {
+            var spec:{op:String, ?operand:Dynamic} = cast spec;
+            return _bokv(opname(spec.op), spec.operand);
+        }
+    }
+
+    /**
       * sanitize an Object
       */
     private static function sanitize(v : Dynamic):Dynamic {
