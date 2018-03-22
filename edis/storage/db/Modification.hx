@@ -155,7 +155,7 @@ class Modification {
     /**
       * utility method to construct an Object
       */
-    private function _buildObject(f : Object->Void):Object {
+    private static inline function _buildObject(f : Object->Void):Object {
         var o:Object = {};
         f( o );
         return o;
