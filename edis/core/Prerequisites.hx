@@ -48,7 +48,6 @@ class Prerequisites {
 
     public function meet(done: VoidCb):Void {
         var steps = items.map(_vasync);
-        trace( steps );
         VoidAsyncs.series(steps, function(?error) {
             done( error );
             if (error != null)
