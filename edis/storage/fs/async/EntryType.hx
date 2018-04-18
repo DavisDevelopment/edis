@@ -20,3 +20,8 @@ enum EntryType {
     ETFile;
     ETDirectory;
 }
+
+enum WrappedEntryType {
+    ETFile(file: File);
+    ETDirectory(folder: Directory);
+}
