@@ -66,6 +66,24 @@ class FileSystem {
         return i.createReadStream(path, options, callback);
     }
 
+    /**
+      * get an Entry for the given Path
+      */
+    public function get(path:Path, ?cb:Cb<Entry>):Promise<Entry> {
+        return new Promise<Entry>(function(yes, no) {
+            exists( path ).then(function(doesExist) {
+                if ( doesExist ) {
+                    isDirectory( path ).then(function(isDir) {
+                        var entry:Entry = new Entry(path, this, isDir, !isDir);
+                        yes( entry );
+                    }).unless(cast no);
+                }
+                else {
+                    no(new FileError(NotFoundError, 'File not found: "$path"'));
+                }
+            }).unless(cast no);
+        }).toAsync( cb );
+    }
 
 /* === Instance Fields === */
 
