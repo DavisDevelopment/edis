@@ -85,6 +85,18 @@ class FileSystem {
         }).toAsync( cb );
     }
 
+    private function ew<T:EntryWrapper>(path:Path, make:Entry->T, ?done:Cb<T>):Promise<T> {
+        return get( path ).transform( make ).toAsync( done );
+    }
+
+    public function directory(path:Path, ?cb:Cb<Directory>):Promise<Directory> {
+        return ew(path, fn(new Directory(_)), cb);
+    }
+
+    public function file(path:Path, ?cb:Cb<File>):Promise<File> {
+        return ew(path, fn(new File(_)), cb);
+    }
+
 /* === Instance Fields === */
 
     private var i: FileSystemImpl;
