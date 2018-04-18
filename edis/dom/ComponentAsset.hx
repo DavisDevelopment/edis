@@ -7,4 +7,5 @@ import tannus.ds.Destructible;
   */
 interface ComponentAsset extends Destructible {
 	function activate():Void;
+	function deactivate():Void;
 }

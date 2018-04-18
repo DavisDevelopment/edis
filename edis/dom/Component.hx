@@ -14,6 +14,7 @@ import tannus.html.Elementable;
 import tannus.html.ElStyles;
 import tannus.html.Win;
 import tannus.html.JSFunction;
+import tannus.async.*;
 
 import haxe.Constraints.Function;
 import Std.*;
@@ -35,6 +36,7 @@ using tannus.ds.StringUtils;
 using tannus.math.TMath;
 using tannus.html.JSTools;
 using tannus.FunctionTools;
+using tannus.async.Asyncs;
 
 class Component extends EventDispatcher implements ComponentAsset implements Elementable {
 	/* Constructor Function */
@@ -126,6 +128,28 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 
 		//- finally, dispatch the 'activate' Event
 		dispatch('activate', this);
+	}
+
+	/**
+	  * deactivate [this] Component
+	  */
+	public function deactivate():Void {
+	    _active = false;
+	    for (x in new Element(toElement().children().toArray())) {
+	        try {
+	            var w:Component = x.data( DATAKEY );
+	            if (w != null && w._active) {
+	                w.deactivate();
+	            }
+	        }
+            catch (error: Dynamic) {
+                throw error;
+            }
+	    }
+	    for (x in assets) {
+	        x.deactivate();
+	    }
+	    dispatch('deactivate', this);
 	}
 
 	/**
