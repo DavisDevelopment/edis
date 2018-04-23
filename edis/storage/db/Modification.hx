@@ -16,29 +16,75 @@ using tannus.ds.ArrayTools;
 using Slambda;
 using tannus.async.Asyncs;
 using tannus.async.VoidAsyncs;
+using tannus.ds.AnonTools;
 using tannus.html.JSTools;
 
+/*
+   class used to represent / construct modifications to be made to documents in a DataStore
+*/
 class Modification {
     /* Constructor Function */
     public function new(?o : Object):Void {
         this.o = (o != null ? o : {});
     }
 
+/* === Methods === */
+
+    /**
+      * create and return a deep-copy of [this] Modification instance
+      */
+    public function copy():Modification {
+        return new Modification(o.deepCopy(true));
+    }
+
+    @:noCompletion
+    public function rebase(m: Modification):Modification {
+        if (m == this) {
+            return this;
+        }
+        else {
+            this.o = m.o.deepCopy( true );
+            return this;
+        }
+    }
+
+    public function _(f: FuzzyReturn<Modification>):Modification {
+        var ret = (untyped f)( this );
+        if (ret != null && ((ret is Modification) || Reflect.isFunction(ret))) {
+            ret = (new Mod(cast ret).toMod());
+        }
+        else {
+            ret = this;
+        }
+        return rebase(cast ret);
+    }
+
 /* === Operators === */
 
+    /**
+      * assign the value of a property of the object that [this] is applied to
+      */
     public function set(index:String, value:Dynamic):Modification {
         return _set(_bokv(index, value));
     }
 
+    /**
+      * increment the value of a property of the object that [this] is applied to
+      */
     public function inc(index:String, value:Int):Modification {
         return _increment(_bokv(index, value));
     }
 
+    /**
+      * delete a property of the object that [this] is applied to
+      */
     public function unset(index: String):Modification {
         return _unset(_bokiv(pluralize(index), true));
-        //return _unset(_bokv(index, value));
     }
 
+    /**
+      * push a value onto an array property of the object that [this] is applied to
+      */
     public function push(index:String, value:Dynamic):Modification {
         return _push(_bokv(index, value));
     }
@@ -78,14 +124,23 @@ class Modification {
         return _bokv(opname('each'), data);
     }
 
+    /**
+      * assign the value of a property of the object that [this] Modification is being applied to
+      */
     public function _set(data: Dynamic):Modification {
         return op('set', data);
     }
 
+    /**
+      * increment the value of a property of the object that [this] is applied to
+      */
     public function _increment(data: Dynamic):Modification {
         return op('inc', data);
     }
 
+    /**
+      * delete a property of the object that [this] is applied to
+      */
     public function _unset(data: Dynamic):Modification {
         return op('unset', data);
     }
@@ -126,9 +181,32 @@ class Modification {
     /**
       * add an operator
       */
-    private inline function op(name:String, operand:Dynamic):Modification {
-        //o[opname(name)] = sanitize( operand );
-        o.nativeArraySet(opname(name), sanitize( operand ));
+    private function op(name:String, operand:Dynamic):Modification {
+        // compute the index-name that correlates with the [name] given
+        var oname:String = opname( name );
+
+        // if a property for [oname] is already present on [o]
+        if (o.exists( oname )) {
+            // then get the value assigned to said pre-existing property
+            var r:Object = o[oname];
+            // check that said value is an object
+            if (!Reflect.isObject( r )) {
+                // complain if it isn't
+                throw 'TypeError: Unhandled value ${r}';
+            }
+            else {
+                // merge the existing value with the one that was being assigned
+                r = r.plus(sanitize( operand ));
+                trace( r );
+                // and replace the existing property with the new merged one
+                o[oname] = r;
+            }
+        }
+        // if no such property exists already,
+        else {
+            // we can simply assign it
+            o[oname] = sanitize( operand );
+        }
         return this;
     }
 
@@ -266,3 +344,6 @@ abstract Mod (EitherType<Modification, Function>) from EitherType<Modification, 
     @:from
     public static inline function fromFunction(f : Function):Mod return new Mod( f );
 }
+
+// represents a function that we don't know for sure will return at all
+private typedef FuzzyReturn<T> = EitherType<T->Void, T->T>;
