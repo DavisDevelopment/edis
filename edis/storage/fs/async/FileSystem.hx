@@ -66,6 +66,8 @@ class FileSystem {
         return i.createReadStream(path, options, callback);
     }
 
+/* === Methods Implemented by This Class === */
+
     /**
       * get an Entry for the given Path
       */
@@ -95,6 +97,48 @@ class FileSystem {
 
     public function file(path:Path, ?cb:Cb<File>):Promise<File> {
         return ew(path, fn(new File(_)), cb);
+    }
+
+/* === Alias Methods === */
+
+    public inline function mkdir(path:Path, ?cb:VoidCb):VoidPromise {
+        return createDirectory(path, cb);
+    }
+
+    public function mkdirp(path:Path, ?cb:VoidCb):VoidPromise {
+        var made:Bool = false;
+        function foo(success:Void->Void, fail:Dynamic->Void):Void {
+            inline function trust(vp)
+                vp.then(success, fail);
+
+            mkdir(path, function(?error) {
+                if (error == null) {
+                    success();
+                }
+                else {
+                    switch error.code {
+                        case 'ENOENT':
+                            if (path.directory.compareTo(path) == 0) {
+                                return fail( error );
+                            }
+                            trust(mkdirp(path.directory));
+
+                        case _:
+                            isDirectory(path)
+                            .yep(function() {
+                                success();
+                            })
+                            .nope(function() {
+                                fail( error );
+                            })
+                            .unless(function(err2) {
+                                fail( error );
+                            });
+                    }
+                }
+            });
+        }
+        return new VoidPromise( foo ).toAsync( cb );
     }
 
 /* === Instance Fields === */
