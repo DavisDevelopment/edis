@@ -17,6 +17,7 @@ using StringTools;
 using tannus.ds.StringUtils;
 using tannus.html.JSTools;
 using tannus.ds.IteratorTools;
+using tannus.async.Asyncs;
 
 /*
    StorageArea -- object used to store persistant data
@@ -590,7 +591,7 @@ class StorageArea {
             return null;
         }
         else {
-            return (re.search( s )[0]);
+            return (re.matches( s )[0]);
         }
     }
 
