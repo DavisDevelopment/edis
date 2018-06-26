@@ -8,6 +8,7 @@ import js.Promise as Prom;
 
 class LocalForage {
     private static var i : LocalForageExternInstance = {untyped LocalForageExtern;};
+    private static var ii: Null<LocalForageInstance> = null;
     public static function getItem<T>(key:String, ?done:Cb<Maybe<T>>):Null<Promise<Maybe<T>>> {
         return prom(i.getItem(key, done));
     }
@@ -27,8 +28,17 @@ class LocalForage {
     public function ready(callback : VoidCb):Void {
         i.ready().then(untyped callback, untyped callback);
     }
+
     public static function createInstance(?options : Dynamic):LocalForageInstance {
         return new LocalForageInstance(i.createInstance( options ));
+    }
+
+    public static var instance(get, never):LocalForageInstance;
+    static function get_instance() {
+        if (ii == null) {
+            ii = new LocalForageInstance( i );
+        }
+        return ii;
     }
 
     private static inline function prom<T>(x:Null<Prom<T>>):Maybe<Promise<T>> {
