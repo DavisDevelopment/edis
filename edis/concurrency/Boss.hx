@@ -173,6 +173,8 @@ class Boss {
         var nativeWorkerObject:NWorker = new NWorker(
             #if cordova
             '../js/${name}.js'
+            #elseif chrome_extension
+            chrome.Runtime.getURL('scripts/${name}.js')
             #else
             '../scripts/${name}.js'
             #end
