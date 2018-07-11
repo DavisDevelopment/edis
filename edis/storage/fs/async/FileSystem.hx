@@ -56,7 +56,7 @@ class FileSystem {
 
     public function readDirectory(path:Path, ?done:Cb<Array<String>>):ArrayPromise<String> return i.readDirectory(path, done);
 
-    public function write(path:Path, data:FileWriteData, ?done:VoidCb):VoidPromise return i.write(path, data, done);
+    public function write(path:Path, data:FileWriteData, ?options:{?mode:Int, ?flags:String}, ?done:VoidCb):VoidPromise return i.write(path, data, done);
 
     public function stat(path:Path, ?done:Cb<FileStat>):Promise<FileStat> return i.stat(path, done);
 
@@ -116,28 +116,43 @@ class FileSystem {
                     success();
                 }
                 else {
-                    switch error.code {
-                        case 'ENOENT':
-                            if (path.directory.compareTo(path) == 0) {
+                    if (error.code != null) {
+                        if (error.code == 'ENOENT') {
+                            trace('$path == ${path.directory}?');
+                            if (path.toString() == path.directory.toString()) {
                                 return fail( error );
                             }
-                            trust(mkdirp(path.directory));
-
-                        case _:
-                            isDirectory(path)
-                            .yep(function() {
-                                success();
-                            })
-                            .nope(function() {
-                                fail( error );
-                            })
-                            .unless(function(err2) {
-                                fail( error );
-                            });
+                            else {
+                                trust(mkdirp( path.directory ));
+                            }
+                        }
                     }
+                    else {
+                        isDirectory( path ).yep(success).nope(fail.bind(error)).unless(err2 -> fail(error));
+                    }
+                    //switch error.code {
+                        //case 'ENOENT':
+                            //if (path.directory.compareTo(path) == 0) {
+                                //return fail( error );
+                            //}
+                            //trust(mkdirp(path.directory));
+
+                        //case _:
+                            //isDirectory(path)
+                            //.yep(function() {
+                                //success();
+                            //})
+                            //.nope(function() {
+                                //fail( error );
+                            //})
+                            //.unless(function(err2) {
+                                //fail( error );
+                            //});
+                    //}
                 }
             });
         }
+
         return new VoidPromise( foo ).toAsync( cb );
     }
 

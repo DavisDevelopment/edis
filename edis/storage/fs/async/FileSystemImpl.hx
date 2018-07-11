@@ -68,8 +68,22 @@ class FileSystemImpl {
         throw 'not implemented';
     }
 
-    public function write(path:Path, data:FileWriteData, ?done:VoidCb):VoidPromise {
+    public function write(path:Path, data:FileWriteData, ?options:{?mode:Int, ?flags:String}, ?done:VoidCb):VoidPromise {
         throw 'not implemented';
+    }
+
+    /**
+      modeVals=(mode)=>[mode & 0o6, (mode >> 3) & 0o6, (mode >> 6) & 0o6]
+      vals2mode=([a,b,c], res=0)=>(res=a, res=(res << 3)+b, res=(res<<3)+c, res)
+     **/
+    function _write_options(o:{?mode:Int, ?flags:String}) {
+        if (o == null)
+            o = {};
+        if (o.mode == null)
+            o.mode = 438;
+        if (o.flags == null)
+            o.flags = 'w';
+        return o;
     }
 
     public function stat(path:Path, ?done:Cb<FileStat>):Promise<FileStat> {
@@ -104,3 +118,4 @@ class FileSystemImpl {
 
     private var root: Null<Path>;
 }
+

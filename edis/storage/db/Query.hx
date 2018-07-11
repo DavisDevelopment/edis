@@ -59,7 +59,6 @@ class Query {
         return not( this );
     }
 
-
 /* === Instance Methods === */
 
     /**
