@@ -175,8 +175,12 @@ class NodeFileSystemImpl extends FileSystemImpl {
         return Fs.readdir.bind(ps(path), _).toPromise().toAsync( done ).array();
     }
 
-    override function write(path:Path, data:FileWriteData, ?callback:VoidCb):VoidPromise {
-        return Fs.writeFile.bind(ps(path), tb(data.toByteArray()), null, _).toPromise().toAsync( callback );
+    override function write(path:Path, data:FileWriteData, ?options, ?callback:VoidCb):VoidPromise {
+        options = _write_options(options);
+        return Fs.writeFile.bind(ps(path), tb(data.toByteArray()), {
+            mode: options.mode,
+            flag: options.flags
+        }, _).toPromise().toAsync( callback );
     }
 
     override function stat(path:Path, ?done:Cb<FileStat>):Promise<FileStat> {
