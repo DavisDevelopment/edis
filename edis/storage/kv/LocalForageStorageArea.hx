@@ -32,10 +32,10 @@ class LocalForageStorageArea extends StorageArea {
 /* === Instance Methods === */
 
     override function initialize(done : VoidCb):Void {
-        //s.ready( done );
-        defer(function() {
-            done();
-        });
+        s.ready( done );
+        //defer(function() {
+            //done();
+        //});
     }
 
     override function getValueByKey<T>(key:String, done:Cb<T>):Void {
