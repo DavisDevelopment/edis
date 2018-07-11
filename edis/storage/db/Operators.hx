@@ -54,9 +54,10 @@ class Operators {
     public function and(queries:Array<Dynamic>):Dynamic return op('and', queries);
     public function not(query:Dynamic):Dynamic return op('not', query);
     public function where(predicate:Dynamic->Bool):Dynamic {
-        return op('where', function() {
-            return predicate( js.Lib.nativeThis );
-        });
+        //return op('where', function() {
+            //return predicate( js.Lib.nativeThis );
+        //});
+        return op('where', predicate.fthis());
     }
 
 /* === Update Operators === */
