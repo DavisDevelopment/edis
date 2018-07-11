@@ -12,11 +12,22 @@ extern class DataStore {
 
     public function loadDatabase(?callback : VoidCb):Void;
     public function insert(doc:Dynamic, callback:Cb<Dynamic>):Void;
+
+    @:overload(function(query:Dynamic<Dynamic>, projection:Dynamic<Dynamic>, callback:Cb<Array<Dynamic>>):Void {})
+    @:overload(function(query: Dynamic<Dynamic>):Cursor<Array<Dynamic>> {})
     public function find(query:Dynamic, callback:Cb<Array<Dynamic>>):Void;
+
+    @:overload(function(query:Dynamic<Dynamic>, projection:Dynamic<Dynamic>, callback:Cb<Dynamic>):Void {})
+    @:overload(function(query: Dynamic<Dynamic>):Cursor<Dynamic> {})
     public function findOne(query:Dynamic, callback:Cb<Dynamic>):Void;
+
+    @:overload(function(query:Dynamic<Dynamic>, callback:Cb<Int>):Void {})
+    @:overload(function(query: Dynamic<Dynamic>):Cursor<Int> {})
     public function count(query:Dynamic, callback:Cb<Int>):Void;
+
     public function update(query:Dynamic, update:Dynamic, options:UpdateOptions, ?callback:Null<Dynamic>->Null<Int>->Null<Dynamic>->Null<Dynamic>->Void):Void;
     public function remove(query:Dynamic, options:{multi:Bool}, ?callback:Cb<Int>):Void;
+
     public function ensureIndex(options:IndexOptions, ?callback:VoidCb):Void;
     public function removeIndex(fieldName:String, ?callback:VoidCb):Void;
 
