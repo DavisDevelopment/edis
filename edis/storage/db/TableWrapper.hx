@@ -77,19 +77,14 @@ class TableWrapper {
     public function find<T>(query:Dynamic, ?done:Cb<Array<T>>):Promise<Array<T>> {
         return untyped wrap(untyped store.find.bind(query, _).toPromise(), done);
     }
-    //public function _find<T>(q:Dynamic, f:Cb<T>):Void {
-        //find(q).toAsync(untyped f);
-    //}
 
     public function count(query:QueryDecl, ?done:Cb<Int>):Promise<Int> {
         return wrap(store.count.bind(query.toDynamic(), _).toPromise(), done);
     }
-    //public function _count(query:QueryDecl, done:Cb<Int>) count( query ).toAsync( done );
 
     public function length(?done:Cb<Int>):Promise<Int> {
         return wrap(count(new Query()), done);
     }
-    //public function _length(done : Cb<Int>) length().toAsync( done );
 
     /**
       * get all items in [this] table

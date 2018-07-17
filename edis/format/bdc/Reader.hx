@@ -60,7 +60,7 @@ class Reader {
                 }
                 else {
                     adv();
-                    var size:Int = input.getUint32(bi());
+                    var size:Int = input.getUInt32(bi());
                     adv(opts.sizeTokenByteLength);
                     trace('chunk size:', size);
                     var chunk = output.append(size, input_offset);

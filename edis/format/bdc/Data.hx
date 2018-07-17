@@ -38,6 +38,7 @@ class Data {
     public inline function get(i: Int):Null<DataChunk> {
         return chunks[i];
     }
+
     public function iterator():Iterator<DataChunk> return chunks.iterator();
 
     public function totalLength():Int {
