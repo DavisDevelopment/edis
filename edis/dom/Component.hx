@@ -37,7 +37,11 @@ using tannus.math.TMath;
 using tannus.html.JSTools;
 using tannus.FunctionTools;
 using tannus.async.Asyncs;
+using edis.dom.Elements;
 
+/**
+  UI Component (basically an Element Controller base-class that uses JQuery)
+ **/
 class Component extends EventDispatcher implements ComponentAsset implements Elementable {
 	/* Constructor Function */
 	public function new(?el : Element):Void {
@@ -45,7 +49,35 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 
 		__checkEvents = false;
 
-		this.el = el;
+        if (el != null) {
+            if (isValidHost( el )) {
+                this.el = el;
+                _possess_( this.el );
+            }
+            else {
+                var nel = _coerce_( el );
+                if (nel == null) {
+                    this.el = _fresh_();
+                    this.el.safely(_possess_(_), null);
+                }
+                else {
+                    if (isValidHost( nel )) {
+                        this.el = nel;
+                        _possess_( this.el );
+                    }
+                    else {
+                        this.el = _fresh_();
+                    }
+                }
+            }
+        }
+        else {
+            this.el = _fresh_();
+            this.el.safely(_possess_(_), null);
+        }
+
+		this.cel = this.el;
+
 		styles = new Styles(Ptr.create( this.el ));
 		assets = new Array();
 		children = new Array();
@@ -102,7 +134,7 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 			return false;
 		}
 		else {
-			return el.is( selector );
+			return (el == cel ? el.is( selector ) : el.is(selector)||cel.is(selector));
 		}
 	}
 
@@ -114,7 +146,7 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 		_active = true;
 		
 		//- activate all attachments
-		for (e in new Element(toElement().children()).toArray()) {
+		for (e in toElement().getChildren()) {
 			try {
 				var w:Component = e.data( DATAKEY );
 				if (w != null && !w._active) {
@@ -135,7 +167,8 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 	  */
 	public function deactivate():Void {
 	    _active = false;
-	    for (x in new Element(toElement().children().toArray())) {
+
+	    for (x in toElement().getChildren()) {
 	        try {
 	            var w:Component = x.data( DATAKEY );
 	            if (w != null && w._active) {
@@ -173,6 +206,34 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 		populate();
 		_built = true;
 		dispatch('build', this);
+	}
+
+    /**
+      check whether the given Element is a valid one for [this] Component to act as the controller for
+     **/
+	function isValidHost(elem: Element):Bool {
+	    return (elem != null);
+	}
+
+    /**
+      perform necessary steps when seizing control of an existing element
+     **/
+	function _possess_(elem: Element) {
+	    //
+	}
+
+    /**
+      attempt to 'coerce' the given Element into one that [this] Component-type can be controller for
+     **/
+	function _coerce_(elem: Element):Null<Element> {
+	    return null;
+	}
+
+    /**
+      create and return a brand-spanking-new Element instance for [this] Component type, when no existing one was provided
+     **/
+	function _fresh_():Null<Element> {
+	    return null;
 	}
 
 	/**
@@ -618,8 +679,8 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 	  * The textual content of [this] Component
 	  */
 	public var text(get, set) : String;
-	private function get_text() return el.text;
-	private function set_text(nt : String) return (el.text = nt);
+	private function get_text() return cel.text;
+	private function set_text(nt : String) return (cel.text = nt);
 
 	/**
 	  * The width of [this] Component
@@ -644,14 +705,22 @@ class Component extends EventDispatcher implements ComponentAsset implements Ele
 	private function set_el(v : Null<Element>):Null<Element> {
 		var ee = el;
 		el = v;
-		/*
-		if (el != null && el != ee) {
-			__bindElement( el );
-		}
-		*/
 		return el;
 	}
 
+    /**
+      the 'controlled' Element instance
+      (primary target for event handlers, container for content affected by [this] controller, etc)
+      usually the same as <code>this.el</code>, but can vary
+     **/
+    public var cel(default, set): Null<Element>;
+    private inline function set_cel(v: Null<Element>):Null<Element> {
+        //var prevCel = this.cel;
+        var res = (this.cel = v);
+        // handle the change of value
+        return res;
+    }
+    
 	/* the unique identifier for [this] Component */
 	public var uid(default, set): String;
 	private function set_uid(v : String):String {
